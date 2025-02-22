@@ -18,9 +18,22 @@ class AbstractMelonOrder:
         """Calculate price, including tax."""
         base_price = 5
         total = (1 + self.tax) * self.qty * base_price
+
+        # apply Christmas melon multiplier
+        if self.species.lower() == "christmas melon":
+            base_price = base_price * 1.5
+
+        total = (1 + self.tax) * self.qty * base_price
+
+    # Add flat fee for international orders with less than 10 melons
+        if self.order_type == "international" and self.qty < 10:
+            total += 3
+
         return total
         
-
+    def mark_shipped(self):
+        """Record the fact than an order has been shipped."""
+        self.shipped = True
 
 class DomesticMelonOrder(AbstractMelonOrder):    
     """A melon order within the USA."""
